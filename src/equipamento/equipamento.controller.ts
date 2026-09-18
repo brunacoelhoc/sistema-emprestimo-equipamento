@@ -38,18 +38,27 @@ export class EquipamentoController {
 
   @ApiOperation({
     summary:
-      'Lista os equipamentos cadastrados (paginacao opcional via page/limit)',
+      'Lista os equipamentos (paginacao via page/limit, filtros via ativo/emprestado)',
   })
   @ApiOkResponse({ description: 'Lista de equipamentos.' })
   @ApiQuery({ name: 'page', required: false, example: 1 })
   @ApiQuery({ name: 'limit', required: false, example: 10 })
+  @ApiQuery({ name: 'ativo', required: false, example: true })
+  @ApiQuery({ name: 'emprestado', required: false, example: false })
   @Get()
-  listarTodos(@Query('page') page?: string, @Query('limit') limit?: string) {
+  listarTodos(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('ativo') ativo?: string,
+    @Query('emprestado') emprestado?: string,
+  ) {
     // "|| undefined" cobre string vazia/ausente/NaN de uma vez so;
     // sem page/limit o service devolve a lista inteira (sem paginar)
     return this.equipamentoService.listarTodos({
       page: Number(page) || undefined,
       limit: Number(limit) || undefined,
+      ativo: ativo === undefined ? undefined : ativo === 'true',
+      emprestado: emprestado === undefined ? undefined : emprestado === 'true',
     });
   }
 }

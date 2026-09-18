@@ -6,6 +6,7 @@ import { CriarEmprestimoDto } from './dto/criar-emprestimo.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import type { UsuarioAutenticado } from '../common/interfaces/usuario-autenticado.interface';
+import { StatusEmprestimo } from '../../generated/prisma/enums';
 
 @ApiTags('Loans')
 @ApiBearerAuth()
@@ -52,22 +53,32 @@ export class EmprestimoController {
 
   @ApiOperation({
     summary:
-      'Lista os emprestimos do usuario autenticado (paginação opcional via page/limit)',
+      'Lista os emprestimos do usuario autenticado (paginacao via page/limit, filtro via status)',
   })
   @ApiOkResponse({ description: 'Lista de emprestimos do usuário autenticado.' })
   @ApiQuery({ name: 'page', required: false, example: 1 })
   @ApiQuery({ name: 'limit', required: false, example: 10 })
+  @ApiQuery({ name: 'status', required: false, enum: StatusEmprestimo })
   @Get('my')
   listarMeus(
     @CurrentUser() usuario: UsuarioAutenticado,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
+    @Query('status') status?: string,
   ) {
     // "|| undefined" cobre string vazia/ausente/NaN de uma vez so;
-    // sem page/limit o service devolve a lista inteira (sem paginar)
+    // sem page/limit o service devolve a lista inteira (sem paginar).
+    // status invalido (fora do enum) e simplesmente ignorado, nao quebra a rota
+    const statusValido = Object.values(StatusEmprestimo).includes(
+      status as StatusEmprestimo,
+    )
+      ? (status as StatusEmprestimo)
+      : undefined;
+
     return this.emprestimoService.listarMeus(usuario.id, {
       page: Number(page) || undefined,
       limit: Number(limit) || undefined,
+      status: statusValido,
     });
   }
 }

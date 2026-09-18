@@ -197,7 +197,7 @@ Cria um usuário. `role` é opcional (padrão `USER`).
 
 #### `GET /equipment` — qualquer usuário autenticado
 
-Paginação opcional via query string (`?page=1&limit=10`). Sem parâmetros, retorna a lista completa.
+Paginação opcional via query string (`?page=1&limit=10`) e filtros opcionais (`?ativo=true&emprestado=false`). Sem parâmetros, retorna a lista completa.
 
 | Status | Situação | Corpo da resposta |
 | --- | --- | --- |
@@ -236,7 +236,7 @@ Sem body.
 
 #### `GET /loans/my` — qualquer usuário autenticado
 
-Paginação opcional via query string (`?page=1&limit=10`). Sem parâmetros, retorna a lista completa.
+Paginação opcional via query string (`?page=1&limit=10`) e filtro opcional por status (`?status=ATIVO` ou `?status=DEVOLVIDO`). Sem parâmetros, retorna a lista completa.
 
 | Status | Situação | Corpo da resposta |
 | --- | --- | --- |

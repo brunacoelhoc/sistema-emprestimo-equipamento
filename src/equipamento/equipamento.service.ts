@@ -15,9 +15,18 @@ export class EquipamentoService {
     return this.prisma.equipamento.create({ data: dto });
   }
 
-  // Lista os equipamentos; com page/limit, aplica paginacao
-  listarTodos(opcoes?: OpcoesPaginacao) {
+  // Lista os equipamentos; com page/limit, aplica paginacao; com
+  // ativo/emprestado, filtra so quem bate com o valor informado
+  listarTodos(
+    opcoes?: OpcoesPaginacao & { ativo?: boolean; emprestado?: boolean },
+  ) {
     return this.prisma.equipamento.findMany({
+      where: {
+        ...(opcoes?.ativo !== undefined && { ativo: opcoes.ativo }),
+        ...(opcoes?.emprestado !== undefined && {
+          emprestado: opcoes.emprestado,
+        }),
+      },
       ...calcularPaginacao(opcoes),
     });
   }

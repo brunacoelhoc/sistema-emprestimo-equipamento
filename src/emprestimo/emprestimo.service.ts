@@ -82,10 +82,17 @@ export class EmprestimoService {
     return emprestimoAtualizado;
   }
 
-  // Lista so os emprestimos do usuario logado, mais recente primeiro
-  listarMeus(usuarioId: number, opcoes?: OpcoesPaginacao) {
+  // Lista so os emprestimos do usuario logado, mais recente primeiro;
+  // com status, filtra so ATIVO ou so DEVOLVIDO
+  listarMeus(
+    usuarioId: number,
+    opcoes?: OpcoesPaginacao & { status?: StatusEmprestimo },
+  ) {
     return this.prisma.emprestimo.findMany({
-      where: { usuarioId },
+      where: {
+        usuarioId,
+        ...(opcoes?.status && { status: opcoes.status }),
+      },
       orderBy: { dataRetirada: 'desc' },
       ...calcularPaginacao(opcoes),
     });
