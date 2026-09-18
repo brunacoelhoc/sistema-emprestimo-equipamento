@@ -1,0 +1,16 @@
+node_modules
+# Keep environment variables out of version control
+.env
+
+/generated/prisma
+dist
+
+# Configurações locais de agentes de IA / editores
+.agents
+.claude
+.windsurf
+skills-lock.json
+
+# Material de estudo pessoal (não faz parte da entrega)
+CHECKLIST.md
+GLOSSARIO.md

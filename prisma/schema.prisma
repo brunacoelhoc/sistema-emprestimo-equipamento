@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum StatusEmprestimo {
+  ATIVO
+  DEVOLVIDO
+}
+
+model Usuario {
+  id          Int          @id @default(autoincrement())
+  nome        String
+  email       String       @unique
+  senha       String
+  role        Role         @default(USER)
+  criadoEm    DateTime     @default(now())
+  emprestimos Emprestimo[]
+}
+
+model Equipamento {
+  id          Int          @id @default(autoincrement())
+  nome        String
+  descricao   String?
+  ativo       Boolean      @default(true)
+  emprestado  Boolean      @default(false)
+  criadoEm    DateTime     @default(now())
+  emprestimos Emprestimo[]
+}
+
+model Emprestimo {
+  id            Int              @id @default(autoincrement())
+  usuarioId     Int
+  usuario       Usuario          @relation(fields: [usuarioId], references: [id])
+  equipamentoId Int
+  equipamento   Equipamento      @relation(fields: [equipamentoId], references: [id])
+  status        StatusEmprestimo @default(ATIVO)
+  dataRetirada  DateTime         @default(now())
+  dataDevolucao DateTime?
+}
+
